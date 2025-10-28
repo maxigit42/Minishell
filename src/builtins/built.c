@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 19:04:58 by mwilline          #+#    #+#             */
-/*   Updated: 2025/09/17 20:06:51 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/10/28 14:37:12 by maximo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,5 @@ int execute_builtin(t_data *data, t_env **env)
         return builtin_env(*env);
     if (ft_strncmp(args[0], "exit", 4) == 0)
         return builtin_exit(args);
-
     return (1);
 }

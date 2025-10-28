@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 18:46:21 by mwilline          #+#    #+#             */
-/*   Updated: 2025/09/25 20:25:03 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/10/29 00:27:05 by maximo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int builtin_export(char **args, t_env **env)
 	int i;
 
 	i = 1;
-	if(!args[1])
+	if(!args[i])
 	{
 		t_env *tmp = *env;
 		while(tmp)
@@ -30,7 +30,6 @@ int builtin_export(char **args, t_env **env)
 		}
 		return(0);
 	}
-
 	while (args[i])
     {
         char *sep = ft_strchr(args[i], '=');
@@ -38,15 +37,12 @@ int builtin_export(char **args, t_env **env)
         {
             char *key = ft_substr(args[i], 0, sep - args[i]);
             char *value = ft_strdup(sep + 1);
-            set_env_value(env, key, value); // tu función para actualizar lista
+            set_env_value(env, key, value);
             free(key);
             free(value);
         }
         else
-        {
-            // solo KEY → añadir sin valor si no existe
             set_env_value(env, args[i], NULL);
-        }
         i++;
 	}
     return (0);

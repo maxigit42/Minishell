@@ -18,7 +18,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 # Compilador y flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g -O1
 
 # Regla principal
 all: $(LIBFT) $(NAME)

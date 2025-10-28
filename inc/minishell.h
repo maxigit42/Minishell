@@ -97,6 +97,8 @@ void free_args(t_data *data);
 int count_commands(t_token *token);
 void    ft_free_list(t_token **token);
 void free_env_list(t_env *env);
+void free_cmd_array(char ***cmd_array);
+int ft_strcmp(const char *s, const char *ss);
 
 //signs
 void    set_signal(void);

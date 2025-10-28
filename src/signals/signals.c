@@ -21,7 +21,10 @@ void    set_signal(void)
 void ctrl_c(int sig) 
 {
     (void)sig;
-	write(STDERR_FILENO, "\n", 1);
+	ssize_t ret;
+	ret = write(STDERR_FILENO, "\n", 1);
+	if(!ret)
+		perror("Error");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();

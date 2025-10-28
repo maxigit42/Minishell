@@ -145,3 +145,38 @@ void free_env_list(t_env *env)
         env = tmp;
     }
 }
+
+void free_cmd_array(char ***cmd_array)
+{
+    int i;
+    int j;
+    
+    if (!cmd_array || !*cmd_array)
+        return;
+    
+    i = 0;
+    while (cmd_array[i]) {
+        j = 0;
+        while (cmd_array[i][j]) {
+            free(cmd_array[i][j]);  // Liberar cada string
+            j++;
+        }
+        free(cmd_array[i]);  // Liberar el subarray
+        i++;
+    }
+    free(cmd_array);  // Liberar el array principal
+}
+
+int ft_strcmp(const char *s, const char *ss)
+{
+	int i;
+
+	i = 0;
+	while(s[i] || ss[i])
+	{
+		if(s[i] != ss[i])
+			return((unsigned char)s[i] - (unsigned char)ss[i]);
+		i++;
+	}
+	return(0);
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 04:27:55 by mwilline          #+#    #+#             */
-/*   Updated: 2025/09/16 17:52:24 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/10/29 00:24:55 by maximo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	set_env_value(t_env **env, const char *key, const char *value)
 
 	while(curr)
 	{
-		if(ft_strncmp(curr->key, key, ft_strlen(curr->key)) == 0)
+		if(ft_strcmp(curr->key, key) == 0)
 		{
 			free(curr->value);
 			curr->value = ft_strdup(value);
@@ -113,10 +113,21 @@ void	set_env_value(t_env **env, const char *key, const char *value)
 	new = malloc(sizeof(t_env));
 	if(!new)
 		return;
-	new->key = ft_strdup(value);
-	new->value = ft_strdup(value);
-	new->next = *env;
-	*env = new;  // volever a mirar 
+	new->key = ft_strdup(key);
+	if(value)
+		new->value = ft_strdup(value);
+	else
+		new->value = ft_strdup("");
+	new->next = NULL;
+	if(!*env)
+	{
+		*env = new;
+		return;
+	}
+	curr = *env;
+    while (curr->next)
+        curr = curr->next;
+    curr->next = new;
 }
 
 void	unset_env_value(t_env **env, const char *key)

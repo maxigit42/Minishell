@@ -58,6 +58,14 @@ void	mini_init(t_data *data, t_env *envp)
 		execute_pipes(data, envp);
 		free_args(data);
 	}
+	if (data->cmd) 
+	{
+        free_cmd_array(data->cmd);
+        data->cmd = NULL;
+    }
+    if (data->token)
+        free_list(data->token);
+    data->token = NULL;
 }
 
 void ft_take_cmd(t_data *data)
@@ -100,3 +108,4 @@ void ft_take_cmd(t_data *data)
 	}
 	data->cmd[i] = NULL;
 }
+

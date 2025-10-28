@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 20:51:03 by mwilline          #+#    #+#             */
-/*   Updated: 2025/09/25 20:21:56 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/10/28 14:06:30 by maximo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int builtin_echo(char **args)
 		newline = 0;
 		i++;
 	}
-	while(args[1])
+	while(args[i])
 	{
-		ft_putstr_fd(args[1], 1);
+		ft_putstr_fd(args[i], 1);
 		if(args[1 + i])
 			ft_putstr_fd(" ", 1);  // creo que no estoy pasando un caracter de espacio y estoy pasando una cadena
 		i++;
