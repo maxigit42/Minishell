@@ -14,6 +14,8 @@ static void ft_heredoc_loop(char *limit, int fd)
         line = readline("> ");
         if(!line || ft_strcmp(limit, line) == 0)
         {
+            free(line);
+            close(fd);
             exit(EXIT_SUCCESS);
         }
         ft_putstr_fd(line, fd);

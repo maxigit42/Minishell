@@ -41,7 +41,7 @@ static int calculate_expanded_len(char *str, t_env *env, int exit_status)
             quote = 0;
             i++;
         }
-        else if(str[i] == '$' && quote == '\'')
+        else if(str[i] == '$' && quote != '\'')
         {
             int var_len = get_var_name_len(&str[i + 1]);
             if(var_len == 0)
@@ -83,7 +83,7 @@ static int expand_var(char *str, char *result, int j, t_data *data)
         result[j++] = '$';
         return(j);
     }
-    if(str[1] == '$')
+    if(str[1] == '?')
     {
         char *exit_var = ft_itoa(data->exit_status);
         ft_strlcpy(&result[j], exit_var, ft_strlen(exit_var) + 1);
@@ -126,7 +126,7 @@ char *expand_variables(char *str, t_data *data)
 			quote = 0;
 			i++;
 		}
-        else if(str[i] == '$' && quote == '\'')
+        else if(str[i] == '$' && quote != '\'')
         {
             int var_len = get_var_name_len(&str[i + 1]);
             j = expand_var(&str[i], result, j, data);
@@ -164,7 +164,7 @@ char **process_tokens(char **tokens, t_data *data)
         free(tokens[i]);
         i++;
     }
-    processed[i] = '\0';
+    processed[i] = NULL;
     free(tokens);
     return(processed);
 }

@@ -6,7 +6,7 @@
 /*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 23:47:45 by mwilline          #+#    #+#             */
-/*   Updated: 2025/11/04 02:00:49 by maximo           ###   ########.fr       */
+/*   Updated: 2025/11/06 18:27:54 by maximo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,23 @@ int     **create_pipes(int  n_pipes)
     while(i < n_pipes)
     {
         pipes[i] = malloc(sizeof(int) * 2);
-        if (pipe(pipes[i]) == -1)
-            ft_error("Pipe failed\n", 1);
+        if (!pipes)
+        {
+            while(i-- >= 0)
+                free(pipes[i]);
+            free(pipes);
+            return(NULL);
+        }
+        if(pipe(pipes[i]) == -1)
+        {
+            while(i >= 0)
+            {
+                free(pipes[i]);
+                i--;
+            }
+            free(pipes);
+            ft_error("Pipes failed\n", 1);
+        } 
         i++;
     }
     return(pipes);
@@ -52,16 +67,26 @@ void setup_child_pipes(int **pipes, int n_pipes, int index)
 
 void close_all_pipes(int **pipes, int n_pipes)
 {
-    for (int i = 0; i < n_pipes; i++)
+    int i;
+
+    i = 0;
+    while(i < n_pipes)
     {
-        close(pipes[i][0]);     //quitar el for
+        close(pipes[i][0]);
         close(pipes[i][1]);
+        i++;
     }
 }
 
 void free_pipes(int **pipes, int n_pipes)
 {
-    for (int i = 0; i < n_pipes; i++)  //quitar el for
+    int i;
+
+    i = 0;
+    while(i < n_pipes)
+    {
         free(pipes[i]);
+        i++;
+    }
     free(pipes);
 }

@@ -27,6 +27,7 @@ void    ft_father(t_data *data, t_env *envp)
 void    execute_single_cmd(t_data *data, t_env *envp)
 {
     pid_t pid;
+    int status;
 
     pid = fork();
     if (pid < 0)
@@ -34,11 +35,18 @@ void    execute_single_cmd(t_data *data, t_env *envp)
 
     if (pid == 0)
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         ft_redirection(data->token);
         execute_cmd(envp, data->cmd[0]);
         exit(127);
     }
-    waitpid(pid, NULL, 0);
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        data->exit_status = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
+        data->exit_status = 128 + WTERMSIG(status);
+    
     free_args(data);
 }
 
@@ -48,9 +56,15 @@ void    execute_pipes(t_data *data, t_env *envp)
     int **pipes;
     int n_cmd;
     t_token **com;
+    int status;
 
     n_cmd = data->pipe + 1;
     pipes = create_pipes(data->pipe);
+    if(!pipes)
+    {
+        ft_putstr_fd("minishell: pipe creation failed\n", 2);
+        return;
+    }
     i = 0;
     data->pid = ft_create_pid(data);
     com = ft_split_token(data, count_commands(data->token));
@@ -61,17 +75,29 @@ void    execute_pipes(t_data *data, t_env *envp)
             ft_error("Fork failed\n", 1);
         if(data->pid[i] == 0)
         {
+            signal(SIGINT, SIG_DFL);    
+            signal(SIGQUIT, SIG_DFL);
             setup_child_pipes(pipes, data->pipe, i);
             ft_redirection(com[i]);
             execute_cmd(envp, data->cmd[i]);
-            exit(1);  // Por seguridad
+            exit(127);
         }
         i++;
     }
     close_all_pipes(pipes, data->pipe);
     i = 0;
     while(i < n_cmd)
-        waitpid(data->pid[i++], NULL, 0);
+    {
+        waitpid(data->pid[i], &status, 0);
+        if(i == n_cmd - 1)  // Solo el último comando actualiza exit_status
+        {
+            if (WIFEXITED(status))
+                data->exit_status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                data->exit_status = 128 + WTERMSIG(status);
+        }
+        i++;
+    }
     free_pipes(pipes, data->pipe);
     ft_free_list(com);
 }
@@ -100,7 +126,7 @@ t_token *ft_token_clone_range(t_token *start, t_token *end)
         if (!new_node)
             ft_error("malloc", 1);
 
-        new_node->str = strdup(start->str);
+        new_node->str = ft_strdup(start->str);
         if (!new_node->str)
             ft_error("strdup", 1);
 
@@ -157,16 +183,20 @@ void    ft_redirection(t_token *token)
 
     while(current)
     {
-        if ((current->type == INFILE || current->type == OUTFILE) && !current->next)
-            ft_error("Syntax error: expected filename after redirection\n", 1);
+        if ((current->type == INFILE || current->type == OUTFILE 
+            || current->type == APPEND || current->type == HEREDOC) && !current->next)
+        {
+            ft_putstr_fd("minishell: syntax error: expected filename after redirection\n", 2);
+            exit(2);
+        }
 
         if (current->type == INFILE)
         {
             fd = open(current->next->str, O_RDONLY);
             if (fd < 0)
             {
-                perror("open infile");
-                ft_error("Failed to open input file\n", 1);
+                perror("minishell");
+                exit(1);
             }
             dup2(fd, STDIN_FILENO);
             close(fd);
@@ -175,7 +205,10 @@ void    ft_redirection(t_token *token)
         {
             fd = open(current->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if(fd < 0)
-                ft_error("open outfile\n", 1);
+            {
+                perror("minishell");
+                exit(1);
+            }
             dup2(fd, STDOUT_FILENO);
             close(fd);
         }
@@ -183,7 +216,10 @@ void    ft_redirection(t_token *token)
         {
             fd = open(current->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (fd < 0)
-                ft_error("open append", 1);
+            {
+                perror("minishell");
+                exit(1);
+            }
             dup2(fd, STDOUT_FILENO);
             close(fd);
         }
@@ -195,7 +231,8 @@ void    ft_redirection(t_token *token)
                 dup2(fd, STDIN_FILENO);
                 close(fd);
             }
-            close(fd);
+            else if(fd == -1)
+                exit(1);
         }
         current = current->next;
     }
