@@ -29,34 +29,33 @@ int check_quotes(char *str)
 
 // cuenta cuantoo tokens tiene cada comando 
 
-static int count_tokens(char *str)
+static int	count_tokens(char *str)
 {
-    int in_quote;
-    int i;
-    int count;
-    int in_token;
+	int	count;
+	int	in_token;
+	int	i;
+	int	in_quote;
 
-    count = 0;
-    i = 0;
-    in_quote = 0;
-    in_token = 0;
-
-    while(str[i])
-    {
-        if((str[i] == '\'' || str[i] == '"') && !in_quote)
-            in_quote = str[i];
-        else if(str[i] == in_quote)
-            in_quote = 0;
-        if(str[i] != '\t' || str[i] != ' ' && !in_token)
-        {
-            in_token = 1;
-            count++;
-        }
-        else if((str[i] == '\t' || str[i] == ' ') && !in_quote)
-            in_token = 0;
-        i++;
-    }
-    return(count);
+	count = 0;
+	in_token = 0;
+	i = 0;
+	in_quote = 0;
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '"') && !in_quote)
+			in_quote = str[i];
+		else if (str[i] == in_quote)
+			in_quote = 0;
+		if (str[i] != ' ' && str[i] != '\t' && !in_token)
+		{
+			in_token = 1;
+			count++;
+		}
+		else if ((str[i] == ' ' || str[i] == '\t') && !in_quote)
+			in_token = 0;
+		i++;
+	}
+	return (count);
 }
 // un strlen de cada token
 
@@ -70,10 +69,10 @@ static int token_len(char *str)
     while(str[i])
     {
         if((str[i] == '\'' || str[i] == '"') && !in_quote)
-            in_quote = str[i];
+            in_quote = str[i++];
         else if(str[i] == in_quote)
             in_quote = 0;
-        if(str[i] != ' ' || str[i] !=  '\t' && !in_quote)
+        if((str[i] == ' ' || str[i] ==  '\t') && !in_quote)
             break;
         i++;
     }
@@ -81,35 +80,36 @@ static int token_len(char *str)
 }
 // extre el token
 
-static char *extract_token(char *str, int len)
+static char	*extract_token(char *str, int len)
 {
-    char *token;
-    char quote;
-    int i;
-    int j;
+	char	*token;
+	int		i;
+	int		j;
+	char	quote;
 
-    i = 0;
-    j = 0;
-    token = malloc(len + 1);
-    if(!token)
-        return(NULL);
-    while(i < len)
-    {
-        if(str[i] == '\'' || str[i] == '"' && !quote)
-            str[i++] = quote;
-        else if(str[i] == quote)
-        {
-            quote = 0;
-            i++;
-        }
-        else
-            token[j++] = str[i++];
-    }
-    token[j] = '\0';
-    return(token);
+	token = malloc(len + 1);
+	if (!token)
+		return (NULL);
+	i = 0;
+	j = 0;
+	quote = 0;
+	while (i < len)
+	{
+		if ((str[i] == '\'' || str[i] == '"') && !quote)
+			quote = str[i++];
+		else if (str[i] == quote)
+		{
+			quote = 0;
+			i++;
+		}
+		else
+			token[j++] = str[i++];
+	}
+	token[j] = '\0';
+	return (token);
 }
 
-char **split_token(char *str)
+char **split_with_quotes(char *str)
 {
     char **tokens;
     int count;
@@ -132,10 +132,10 @@ char **split_token(char *str)
         if(str[i])
         {
             len = token_len(&str[i]);
-            tokens[j++] = extract_token(&str[i], len)
+            tokens[j++] = extract_token(&str[i], len);
             i += len;
         }
     }
-    tokens[j] = '\0';
+    tokens[j] = NULL;
     return(tokens);
 }

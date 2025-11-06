@@ -21,10 +21,6 @@ t_token     *ft_token_new(char *str)
         ft_error(MALLOC_ERR, 0);
     new->str = ft_strdup(str);
     new->type = 0;
-    new->infile = 0;
-    new->outfile = 0;
-    new->heredoc = 0;
-    new->append = 0;
     new->next = NULL;
     return(new);
 }
@@ -32,25 +28,13 @@ t_token     *ft_token_new(char *str)
 void    get_token_type(char *arg, t_token *token, t_data *data)
 {
     if(ft_strncmp(arg, ">>", 2) == 0)
-    {
-        token->append++;
         token->type = APPEND;
-    }
     else if(ft_strncmp(arg, "<<", 2) == 0)
-    {
-        token->heredoc++;
         token->type = HEREDOC;
-    }
     else if(ft_strncmp(arg, ">", 1) == 0)
-    {
-        token->outfile++;
         token->type = OUTFILE;
-    }
     else if(ft_strncmp(arg, "<", 1) == 0)
-    {
-        token->infile++;
         token->type = INFILE;
-    }
     else if(ft_strncmp(arg, "|", 1) == 0)
     {
         data->pipe++;
@@ -87,9 +71,14 @@ void    split_arg(char *args, t_data *data)
     t_token *new;
 
     i = 0;
-    token_array = ft_split(args, ' ');
+    if(!check_quotes(args))
+        return;
+    token_array = split_with_quotes(args);
     if (!token_array)
         return ;
+    token_array = process_tokens(token_array, data);
+    if(!token_array)
+        return;
     while(token_array[i])
     {
         new = ft_token_new(token_array[i]);
@@ -100,17 +89,17 @@ void    split_arg(char *args, t_data *data)
     free_split(token_array);
 }
 
-int is_builtin(const char *str)
+int	is_builtin(const char *str)
 {
-    if(!str)
-        return(0);
-    return(
-        ft_strncmp(str, "echo", 4) == 0 ||
-        ft_strncmp(str, "cd", 2) == 0 ||
-        ft_strncmp(str, "pwd", 3) == 0 ||
-        ft_strncmp(str, "export", 6) == 0 ||
-        ft_strncmp(str, "unset", 5) == 0 ||
-        ft_strncmp(str, "env", 3) == 0 ||
-        ft_strncmp(str, "exit", 4) == 0
-    );
+	if (!str)
+		return (0);
+	return (
+		ft_strcmp(str, "echo") == 0
+		|| ft_strcmp(str, "cd") == 0
+		|| ft_strcmp(str, "pwd") == 0
+		|| ft_strcmp(str, "export") == 0
+		|| ft_strcmp(str, "unset") == 0
+		|| ft_strcmp(str, "env") == 0
+		|| ft_strcmp(str, "exit") == 0
+	);
 }

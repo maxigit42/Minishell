@@ -12,15 +12,18 @@
 
 #include "minishell.h"
 
+volatile sig_atomic_t	g_signal = 0;
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_data	data;
+
 	(void)argc;
 	(void)argv;
 	data.token = NULL;
 	data.env = envp_to_list(envp);
-
+	data.exit_status = 0;
 	set_signal();
 	while(1)
 	{
@@ -38,18 +41,21 @@ int main(int argc, char **argv, char **envp)
 		free(input);
 	}
 	free_env_list(data.env);
-	return(0);
+	return(data.exit_status);
 }
 
 void	mini_init(t_data *data, t_env *envp)
 {
+	int status;
+
+	status = 0;
 	ft_take_cmd(data);
 	if(!data->token)
 		return;
 	if(data->pipe == 0)
 	{
 		if(data->token->type == BUILTIN)
-			execute_builtin(data, &envp);
+			status = execute_builtin(data, &envp);
 		else
 			execute_single_cmd(data, envp);
 	}
@@ -58,6 +64,7 @@ void	mini_init(t_data *data, t_env *envp)
 		execute_pipes(data, envp);
 		free_args(data);
 	}
+	data->exit_status = status;
 	if (data->cmd) 
 	{
         free_cmd_array(data->cmd);
