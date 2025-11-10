@@ -5,21 +5,19 @@
 int check_quotes(char *str)
 {
     int i;
-    int single;
-    int doble;
+    char quote;
 
-    single = 0;
-    doble = 0;
+    quote = 0;
     i = 0;
     while(str[i])
     {
-        if(str[i] == '\'' && doble == 0)
-            single = !single;
-        else if(str[i] == '"' && single == 0)
-            doble = !doble;
+        if((str[i] == '\'' || str[i] == '"') && !quote)
+            quote = str[i];
+        else if(str[i] == quote)
+            quote = 0;
         i++;
     }
-    if(single || doble)
+    if(quote)
     {
         ft_putstr_fd("minishell: syntax error: unclosed quotes\n", 2);
         return(0);
@@ -34,7 +32,7 @@ static int	count_tokens(char *str)
 	int	count;
 	int	in_token;
 	int	i;
-	int	in_quote;
+	char in_quote;
 
 	count = 0;
 	in_token = 0;
@@ -46,13 +44,13 @@ static int	count_tokens(char *str)
 			in_quote = str[i];
 		else if (str[i] == in_quote)
 			in_quote = 0;
-		if (str[i] != ' ' && str[i] != '\t' && !in_token)
-		{
+		if (str[i] == ' ' || str[i] == '\t' && !in_quote)
+            in_token = 0;
+        else if(!in_token)
+        {
 			in_token = 1;
 			count++;
 		}
-		else if ((str[i] == ' ' || str[i] == '\t') && !in_quote)
-			in_token = 0;
 		i++;
 	}
 	return (count);
@@ -62,19 +60,26 @@ static int	count_tokens(char *str)
 static int token_len(char *str)
 {
     int i;
-    int in_quote;
+    char quote;
 
-    in_quote = 0;
+    quote = 0;
     i = 0;
     while(str[i])
     {
-        if((str[i] == '\'' || str[i] == '"') && !in_quote)
-            in_quote = str[i++];
-        else if(str[i] == in_quote)
-            in_quote = 0;
-        if((str[i] == ' ' || str[i] ==  '\t') && !in_quote)
+        if((str[i] == '\'' || str[i] == '"') && !quote)
+        {
+            quote = str[i];
+            i++;
+        }
+        else if(str[i] == quote)
+        {
+            quote = 0;
+            i++;
+        }
+        else if((str[i] == ' ' || str[i] ==  '\t') && !quote)
             break;
-        i++;
+        else
+            i++;
     }
     return(i);
 }
@@ -96,14 +101,18 @@ static char	*extract_token(char *str, int len)
 	while (i < len)
 	{
 		if ((str[i] == '\'' || str[i] == '"') && !quote)
-			quote = str[i++];
-		else if (str[i] == quote)
+        {
+            quote = str[i];
+            i++;
+            continue;
+        }
+		if (str[i] == quote)
 		{
 			quote = 0;
 			i++;
+            continue;
 		}
-		else
-			token[j++] = str[i++];
+		token[j++] = str[i++];
 	}
 	token[j] = '\0';
 	return (token);
@@ -132,10 +141,31 @@ char **split_with_quotes(char *str)
         if(str[i])
         {
             len = token_len(&str[i]);
-            tokens[j++] = extract_token(&str[i], len);
+            tokens[j] = extract_token(&str[i], len);
+            if(!tokens[j])
+            {
+                while(--j >= 0)
+                    free(tokens[j]);
+                free(tokens);
+                return(NULL);
+            }
+            j++;
             i += len;
         }
     }
     tokens[j] = NULL;
     return(tokens);
+}
+
+void prinft_tokens_debug(char **tokens)
+{
+    int i = 0;
+
+    printf("=== TOKENS DESPUÉS DE SPLIT ===\n");
+    while(tokens && tokens[i])
+    {
+        printf("[%d] \"%s\"\n", i, tokens[i]);
+        i++;
+    }
+    printf("================================\n");
 }

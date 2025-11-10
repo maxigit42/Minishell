@@ -18,8 +18,13 @@ t_token     *ft_token_new(char *str)
     
     new = malloc(sizeof(t_token));
     if(!new)
-        ft_error(MALLOC_ERR, 0);
+        return(NULL);
     new->str = ft_strdup(str);
+    if(!new->str)
+    {
+        free(new);
+        return(NULL);
+    }
     new->type = 0;
     new->next = NULL;
     return(new);
@@ -67,21 +72,33 @@ void    put_lstback(t_token **head, t_token *new)
 void    split_arg(char *args, t_data *data)
 {
     char **token_array;
+    char **original_array;
     int i;
     t_token *new;
 
     i = 0;
     if(!check_quotes(args))
+    {
+        data->exit_status = 2;
         return;
+    }
     token_array = split_with_quotes(args);
     if (!token_array)
         return ;
+    original_array = token_array;
     token_array = process_tokens(token_array, data);
     if(!token_array)
         return;
     while(token_array[i])
     {
         new = ft_token_new(token_array[i]);
+        if(!new)
+        {
+            free_split(token_array);
+            free_list(data->token);
+            data->token = NULL;
+            return;
+        }
         put_lstback(&(data->token), new);
         get_token_type(token_array[i], new, data);
         i++;
