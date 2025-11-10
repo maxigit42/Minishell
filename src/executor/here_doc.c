@@ -9,14 +9,28 @@ static void ft_heredoc_loop(char *limit, int fd)
 {
     char *line;
 
-    while(1)
+    signal(SIGINT, SIG_DFL);  /* Permitir Ctrl+C en heredoc */
+    
+    while (1)
     {
         line = readline("> ");
-        if(!line || ft_strcmp(limit, line) == 0)
+        if (!line)  /* Ctrl+D o Ctrl+C */
+        {
+            if (g_signal == SIGINT)  /* Fue Ctrl+C */
+            {
+                close(fd);
+                exit(130);  /* 128 + SIGINT */
+            }
+            /* Fue Ctrl+D → EOF válido */
+            ft_putstr_fd("minishell: warning: here-document delimited by end-of-file\n", 2);
+            close(fd);
+            exit(0);
+        }
+        if (ft_strcmp(limit, line) == 0)
         {
             free(line);
             close(fd);
-            exit(EXIT_SUCCESS);
+            exit(0);
         }
         ft_putstr_fd(line, fd);
         ft_putchar_fd('\n', fd);

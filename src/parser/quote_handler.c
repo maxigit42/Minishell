@@ -27,7 +27,7 @@ int check_quotes(char *str)
     return(1);
 }
 
-// cuenta cuantoo tokens tiene cada comando 
+// cuenta cuantos tokens tiene cada comando 
 
 static int	count_tokens(char *str)
 {
