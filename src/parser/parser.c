@@ -112,6 +112,9 @@ void split_arg(char *args, t_data *data)
 
     // 4️⃣ Crear lista enlazada de tokens y asignar tipos
     i = 0;
+    for(int x = 0; expanded_array[x]; x++)
+        printf("%s\n split:", expanded_array[x]);
+
     while (expanded_array[i])
     {
         new = ft_token_new(expanded_array[i]);
@@ -127,6 +130,7 @@ void split_arg(char *args, t_data *data)
         i++;
     }
 
+    free_split(token_array);
     // 5️⃣ Liberar arrays temporales
     free_split(expanded_array);
 }
