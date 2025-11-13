@@ -27,9 +27,12 @@ int main(int argc, char **argv, char **envp)
 	{
 		input = readline("minishell$ ");
 		if(!input)
+			break;	
+		if (!quotes_closed(input)) //hasta q las comillas no se cierren no para de leer la salida como en bash
+			input = expand_input(input); // concatena la nueva entrada con input automaticamente
+		if(!input) // he puesto esto por un caso especial que no entiendo muy bien por que se comporta pero si no da segfault
 			break;
-		if(*input)
-			add_history(input);
+		add_history(input);
 		data.token = NULL;
 		data.pipe = 0;
 		if(input[0])
@@ -39,7 +42,8 @@ int main(int argc, char **argv, char **envp)
 		if (data.token)
     		free_list(data.token);
 		}
-		free(input);
+		if (input)
+			free(input);
 	}
 	free_env_list(data.env);
 	return(0);

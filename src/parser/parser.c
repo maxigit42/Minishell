@@ -92,13 +92,7 @@ void split_arg(char *args, t_data *data)
 
     if (!args || !*args)
         return;
-
-    // 1️⃣ Validar que las comillas estén balanceadas
-    if (!check_quotes(args))
-    {
-        data->exit_status = 2;
-        return;
-    }
+	// quite la verificacion q hacias aqui para replicar el comportamiento bash
 
     // 2️⃣ Tokenizar respetando las comillas
     tokens_quote = split_with_quotes(args);

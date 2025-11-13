@@ -11,6 +11,26 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+// expande la entrada
+char	*expand_input(char *input)
+{
+	char	*new_line;
+	char 	*temp;
+	char	*joined;
+
+	while (!quotes_closed(input))
+	{
+		new_line = readline("> ");
+		temp = ft_strjoin(input, "\n");
+		joined = ft_strjoin(temp, new_line);
+		free(temp);
+		free(input);
+		free(new_line);
+		input = ft_strdup(joined);
+		free(joined);
+	}
+	return (input);
+}
 
 void ft_error(char *str, int quit)
 {

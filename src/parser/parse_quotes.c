@@ -1,25 +1,28 @@
 
 #include "minishell.h"
 
-int	check_quotes(char *str)
+// he sustituido la funcion de check_quotes por esta
+int quotes_closed(char *s)
 {
-	int		i = 0;
-	char	quote = 0;
+	static int	q_s;
+	static int q_d;
 
-	while (str[i])
+	if (!s)
+		return (1);
+	q_s = 0;
+	q_d = 0;
+	while (*s)
 	{
-		if ((str[i] == '\'' || str[i] == '"') && !quote)
-			quote = str[i];
-		else if (str[i] == quote)
-			quote = 0;
-		i++;
+		if (*s == '\'' && !q_d)
+			q_s = !q_s;
+		if (*s == '\"' && !q_s)
+			q_d = !q_d;
+		s++;
 	}
-	if (quote)
-	{
-		ft_putstr_fd("minishell: syntax error: unclosed quotes\n", 2);
+	if (q_s || q_d)
 		return (0);
-	}
-	return (1);
+	else
+		return (1);
 }
 
 static int	count_tokens(char *str)
@@ -105,8 +108,7 @@ t_parse_token *split_with_quotes(char *str)
     int count = count_tokens(str);
     int i = 0, j = 0;
 
-    if (!check_quotes(str))
-        return NULL;
+	// quite la verificacion q hacias aqui por que ya esta seguro
 
     tokens = malloc(sizeof(t_parse_token) * (count + 1));
     if (!tokens)

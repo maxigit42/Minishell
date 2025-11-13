@@ -94,7 +94,7 @@ t_token	*ft_token_new(char *str);
 int		is_builtin(const char *str);
 
 // quote_handle
-int		check_quotes(char *str);
+int		quotes_closed(char *s);
 t_parse_token *split_with_quotes(char *str);
 char	*expand_variables(char *str, t_data *data);
 char **process_tokens(t_parse_token *tokens, t_data *data);
@@ -113,6 +113,7 @@ void	free_env_list(t_env *env);
 void	free_cmd_array(char ***cmd_array);
 int		ft_strcmp(const char *s, const char *ss);
 void free_token(t_parse_token *token);
+char	*expand_input(char *input);
 
 // signs
 void	set_signal(void);
