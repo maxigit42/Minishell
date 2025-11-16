@@ -180,3 +180,25 @@ int ft_strcmp(const char *s, const char *ss)
 	}
 	return(0);
 }
+
+int has_redirection(t_token *token)
+{
+    while (token)
+    {
+        if (token->type == OUTFILE || token->type == INFILE
+            || token->type == APPEND || token->type == HEREDOC)
+            return (1);
+        token = token->next;
+    }
+    return (0);
+}
+
+int builtin_modifies_state(char *cmd)
+{
+    if (!cmd)
+        return (0);
+    return (!ft_strcmp(cmd, "cd")
+         || !ft_strcmp(cmd, "export")
+         || !ft_strcmp(cmd, "unset")
+         || !ft_strcmp(cmd, "exit"));
+}

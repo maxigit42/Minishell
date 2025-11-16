@@ -113,6 +113,8 @@ void	free_env_list(t_env *env);
 void	free_cmd_array(char ***cmd_array);
 int		ft_strcmp(const char *s, const char *ss);
 void free_token(t_parse_token *token);
+int has_redirection(t_token *token);
+int builtin_modifies_state(char *cmd);
 
 // signs
 void	set_signal(void);

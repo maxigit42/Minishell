@@ -45,33 +45,48 @@ int main(int argc, char **argv, char **envp)
 	return(0);
 }
 
-void	mini_init(t_data *data, t_env *envp)
+void mini_init(t_data *data, t_env *envp)
 {
-	ft_take_cmd(data);
-	if(!data->token)
-		return;
-	if(data->pipe == 0)
-	{
-		if(data->token->type == BUILTIN)
-			data->exit_status = execute_builtin(data, &data->env);
-		else
-			execute_single_cmd(data, envp);
-	}
-	else
-	{
-		execute_pipes(data, envp);
-		free_args(data);
-	}
-	if (data->cmd) 
-	{
+    ft_take_cmd(data);
+    if (!data->token)
+        return;
+
+    /* SOLO 1 COMANDO (SIN PIPES) */
+    if (data->pipe == 0)
+    {
+        char *cmd = data->cmd[0][0];
+
+        /* Builtin en el padre SOLO si modifica estado y NO hay redirecciones */
+        if (data->token->type == BUILTIN
+            && builtin_modifies_state(cmd)
+            && !has_redirection(data->token))
+        {
+            data->exit_status = execute_builtin(data, &data->env);
+        }
+        else
+        {
+            /* ➜ builtin con redirección o comando normal → HIJO */
+            execute_single_cmd(data, envp);
+        }
+    }
+    else
+    {
+        /* MÚLTIPLES COMANDOS (PIPES) */
+        execute_pipes(data, envp);
+        free_args(data);
+    }
+
+    if (data->cmd)
+    {
         free_cmd_array(data->cmd);
         data->cmd = NULL;
     }
+
     if (data->token)
-	{
+    {
         free_list(data->token);
-    	data->token = NULL;
-	}
+        data->token = NULL;
+    }
 }
 
 void	ft_take_cmd(t_data *data)
