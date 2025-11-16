@@ -12,33 +12,23 @@
 
 #include "minishell.h"
 
-int	find_valid_path(char **paths, char **envp, char **cmd)
+void	execute_single_cmd(t_data *data, t_env *envp)
 {
-	char	*temp;
-	char	*full_path;
-	int		i;
+	pid_t	pid;
+	int		status;
 
-	if (!cmd || !cmd[0])
-		return (0);
-	i = 0;
-	while (paths[i])
+	pid = fork();
+	if (pid < 0)
+		ft_error("Fork failed\n", 1);
+	if (pid == 0)
 	{
-		temp = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(temp, cmd[0]);
-		free(temp);
-		if (!full_path)
-			return (0);
-		if (access(full_path, X_OK) == 0)
-		{
-			execve(full_path, cmd, envp);
-			perror("execve");
-			free(full_path);
-			return (0);
-		}
-		free(full_path);
-		i++;
+		ft_redirection(data->token);
+		execute_cmd(envp, data->cmd[0]);
+		exit(127);
 	}
-	return (0);
+	waitpid(pid, &status, 0);
+	data->exit_status = WEXITSTATUS(status);
+	free_args(data);
 }
 
 int	execute_cmd(t_env *env, char **cmd)
@@ -66,31 +56,4 @@ int	execute_cmd(t_env *env, char **cmd)
 	free_split(paths);
 	free_split(envp_array);
 	return (1);
-}
-
-char	**get_cmds(t_data *data)
-{
-	char	**args;
-	t_token	*current;
-	int		i;
-
-	i = 0;
-	current = data->token;
-	while (current && current->type == CMD)
-	{
-		i++;
-		current = current->next;
-	}
-	args = malloc(sizeof(char *) * (i + 1));
-	if (!args)
-		return (NULL);
-	i = 0;
-	current = data->token;
-	while (current && current->type == CMD)
-	{
-		args[i++] = ft_strdup(current->str);
-		current = current->next;
-	}
-	args[i] = NULL;
-	return (args);
 }
