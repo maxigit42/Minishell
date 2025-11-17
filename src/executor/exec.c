@@ -40,6 +40,35 @@ int     find_valid_path(char **paths, char **envp, char **cmd)
     }
     return(0);
 }
+static int  is_path(char *cmd)
+{
+    if (!cmd)
+        return (0);			// funcion nueva
+    if (cmd[0] == '/' || cmd[0] == '.')
+        return (1);
+    return (0);
+}
+
+static void execute_direct_path(char **cmd, char **envp_array)
+{
+    if (access(cmd[0], F_OK) != 0)
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd[0], 2);
+        ft_putstr_fd(": No such file or directory\n", 2);
+        exit(127);
+    }
+    if (access(cmd[0], X_OK) != 0)							//funcion nueva
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd[0], 2);
+        ft_putstr_fd(": Permission denied\n", 2);
+        exit(126);
+    }
+    execve(cmd[0], cmd, envp_array);
+    perror("execve");
+    exit(126);
+}
 
 void   execute_cmd(t_env *env, char **cmd)
 {
@@ -47,28 +76,48 @@ void   execute_cmd(t_env *env, char **cmd)
     char    **paths;
     char    **envp_array;
 
-    if (!env)
+    if (!cmd || !cmd[0])
+        return;
+
+    envp_array = env_list_to_array(env);
+    if(!envp_array)
+        return;
+
+    /* Si es ruta absoluta o relativa, ejecutar directamente */
+    if (is_path(cmd[0]))
     {
-        printf("⛔ envp es NULL\n");
+        execute_direct_path(cmd, envp_array);
+        free_split(envp_array);
         return;
     }
+
+    /* Buscar en PATH */
     full_envp = get_env_value_list(env, "PATH");
     if (!full_envp)
     {
-        printf("⛔ No se encontró PATH en envp\n");
-        return;
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd[0], 2);
+        ft_putstr_fd(": No such file or directory\n", 2);
+        free_split(envp_array);
+        exit(127);
     }
-    paths = ft_split(full_envp, ':');
+
+    paths = ft_split(full_envp, ':');    //modificaciones en esta funcion
     if(!paths)
-        return ;
-    envp_array = env_list_to_array(env);
-    if(!envp_array)
     {
-        free_split(paths);
+        free_split(envp_array);
         return;
     }
+
     if(!find_valid_path(paths, envp_array, cmd))
-        printf("command not found\n");
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd[0], 2);
+        ft_putstr_fd(": command not found\n", 2);
+        free_split(paths);
+        free_split(envp_array);
+        exit(127);
+    }
     free_split(paths);
     free_split(envp_array);
 }
