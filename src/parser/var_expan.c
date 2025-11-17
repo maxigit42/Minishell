@@ -6,7 +6,7 @@
 /*   By: biniesta <biniesta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 21:28:44 by biniesta          #+#    #+#             */
-/*   Updated: 2025/11/17 01:51:09 by biniesta         ###   ########.fr       */
+/*   Updated: 2025/11/17 05:32:02 by biniesta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	handle_var(t_data *data, char **str, char *tmp)
 	return (var_len + 1);
 }
 
-char *expand_variables(char *str, t_data *data)
+char	*expand_variables(char *str, t_data *data)
 {
 	int		i;
 	char	*result;
@@ -65,13 +65,13 @@ char *expand_variables(char *str, t_data *data)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1]  != '\0')
+		if (str[i] == '$' && str[i + 1] != '\0')
 		{
 			if (str[i + 1] == '?')
 				i += handle_exit_status(data, &result);
 			else
-				i += handle_var(data, &result , &str[i + 1]);
-			continue;
+				i += handle_var(data, &result, &str[i + 1]);
+			continue ;
 		}
 		char c[2] = { str[i], '\0' };
 		tmp = ft_strjoin(result, c);
@@ -80,36 +80,4 @@ char *expand_variables(char *str, t_data *data)
 		i++;
 	}
 	return (result);
-}
-
-char	**process_tokens(t_parse_token *tokens, t_data *data)
-{
-	int		i;
-	int		count;
-	char	**processed;
-
-	count = 0;
-	while (tokens[count].str)
-		count++;
-	processed = malloc(sizeof(char *) * (count + 1));
-	if (!processed)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		if (tokens[i].in_single_quote == 1)
-			processed[i] = ft_strdup(tokens[i].str);
-		else
-			processed[i] = expand_variables(tokens[i].str, data);
-		if (!processed[i])
-		{
-			while (--i >= 0)
-				free(processed[i]);
-			free(processed);
-			return (NULL);
-		}
-		i++;
-	}
-	processed[i] = NULL;
-	return (processed);
 }
