@@ -27,12 +27,9 @@ int main(int argc, char **argv, char **envp)
 	{
 		input = readline("minishell$ ");
 		if(!input)
-			break;	
-		if (!quotes_closed(input)) //hasta q las comillas no se cierren no para de leer la salida como en bash
-			input = expand_input(input); // concatena la nueva entrada con input automaticamente
-		if(!input) // he puesto esto por un caso especial que no entiendo muy bien por que se comporta pero si no da segfault
 			break;
-		add_history(input);
+		if(*input)
+			add_history(input);
 		data.token = NULL;
 		data.pipe = 0;
 		if(input[0])
@@ -42,40 +39,46 @@ int main(int argc, char **argv, char **envp)
 		if (data.token)
     		free_list(data.token);
 		}
-		if (input)
-			free(input);
+		free(input);
 	}
 	free_env_list(data.env);
 	return(0);
 }
 
-void	mini_init(t_data *data, t_env *envp)
+void mini_init(t_data *data, t_env *envp)
 {
-	ft_take_cmd(data);
-	if(!data->token)
-		return;
-	if(data->pipe == 0)
-	{
-		if(data->token->type == BUILTIN)
-			data->exit_status = execute_builtin(data, &data->env);
-		else
-			execute_single_cmd(data, envp);
-	}
-	else
-	{
-		execute_pipes(data, envp);
-		free_args(data);
-	}
-	if (data->cmd) 
-	{
+    ft_take_cmd(data);
+    if (!data->token)
+        return;
+
+    if (data->pipe == 0)
+    {
+        char *cmd = data->cmd[0][0];
+
+        if (data->token->type == BUILTIN
+            && builtin_modifies_state(cmd)
+            && !has_redirection(data->token))
+        {
+            data->exit_status = execute_builtin(data, &data->env);
+        }
+        else
+            execute_single_cmd(data, envp);
+    }
+    else
+    {
+        execute_pipes(data, envp);
+        free_args(data);
+    }
+    if (data->cmd)
+    {
         free_cmd_array(data->cmd);
         data->cmd = NULL;
     }
     if (data->token)
-	{
+    {
         free_list(data->token);
-    	data->token = NULL;
-	}
+        data->token = NULL;
+    }
 }
 
 void	ft_take_cmd(t_data *data)
