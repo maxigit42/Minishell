@@ -1,0 +1,71 @@
+// void	set_env_value(t_env **env, const char *key, const char *value)
+// {
+// 	t_env *curr = *env;
+
+// 	while(curr)
+// 	{
+// 		if(ft_strcmp(curr->key, key) == 0)
+// 		{
+// 			free(curr->value);
+// 			curr->value = ft_strdup(value);
+// 			return ;
+// 		}
+// 		curr = curr->next;
+// 	}
+// 	t_env *new;
+// 	new = malloc(sizeof(t_env));
+// 	if(!new)
+// 		return ;
+// 	new->key = ft_strdup(key);
+// 	if(value)
+// 		new->value = ft_strdup(value);
+// 	else
+// 		new->value = ft_strdup("");
+// 	new->next = NULL;
+// 	if(!*env)
+// 	{
+// 		*env = new;
+// 		return ;
+// 	}
+// 	curr = *env;
+//     while (curr->next)
+//         curr = curr->next;
+//     curr->next = new;
+// }
+
+// char **env_list_to_array(t_env *env)
+// {
+//     int count = 0;
+//     t_env *temp = env;
+//     char **array;
+//     int i;
+// 	char *key_equal;
+
+//     while (temp)
+//     {
+//         count++;
+//         temp = temp->next;
+//     }
+//     array = malloc(sizeof(char *) * (count + 1));
+//     if (!array)
+//         return (NULL);
+//     temp = env;
+//     i = 0;
+//     while (temp)
+//     {
+//         if (temp->value)
+//         {
+//             key_equal = ft_strjoin(temp->key, "=");
+//             array[i] = ft_strjoin(key_equal, temp->value);
+//             free(key_equal);
+//         }
+//         else
+//         {
+//             array[i] = ft_strjoin(temp->key, "=");
+//         }
+//         i++;
+//         temp = temp->next;
+//     }
+//     array[i] = NULL;
+//     return (array);
+// }
