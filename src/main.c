@@ -2,12 +2,9 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-	+:+     */
-/*   By: maximo <maximo@student.42.fr>              +#+  +:+      
-	+#+        */
-/*                                                +#+#+#+#+#+  
-	+#+           */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maximo <maximo@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:06:53 by mwilline          #+#    #+#             */
 /*   Updated: 2025/07/22 21:19:12 by maximo           ###   ########.fr       */
 /*                                                                            */
@@ -15,18 +12,23 @@
 
 #include "minishell.h"
 
-int g_exit_status = 0;
+int		g_exit_status = 0;
+
+void	start_args(char **argv, int argc, t_data *data, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	data->token = NULL;
+	data->env = envp_to_list(envp);
+	data->exit_status = 0;
+}
 
 int	main(int argc, char **argv, char **envp)
 {
-	char *input;
-	t_data data;
-	(void)argc;
-	(void)argv;
-	data.token = NULL;
-	data.env = envp_to_list(envp);
-	data.exit_status = 0;
+	char	*input;
+	t_data	data;
 
+	start_args(argv, argc, &data, envp);
 	set_signal();
 	while (1)
 	{
@@ -76,9 +78,9 @@ void	mini_init(t_data *data, t_env *envp)
 
 void	ft_take_cmd(t_data *data)
 {
-	t_token *current;
-	int i;
-	char **subcmd;
+	t_token	*current;
+	int	i;
+	char	**subcmd;
 
 	if (!alloc_cmd_array(data))
 		return ;
@@ -96,4 +98,3 @@ void	ft_take_cmd(t_data *data)
 	}
 	data->cmd[i] = NULL;
 }
-

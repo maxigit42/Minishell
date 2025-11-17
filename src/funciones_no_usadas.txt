@@ -1,3 +1,39 @@
+int	main(int argc, char **argv, char **envp)
+// {
+// 	char *input;
+// 	t_data data;
+// 	(void)argc;
+// 	(void)argv;
+// 	data.token = NULL;
+// 	data.env = envp_to_list(envp);
+// 	data.exit_status = 0;
+
+// 	set_signal();
+// 	while (1)
+// 	{
+// 		input = readline("minishell$ ");
+// 		if (!input)
+// 			break ;
+// 		if (*input)
+// 			add_history(input);
+// 		data.token = NULL;
+// 		data.pipe = 0;
+// 		if (input[0])
+// 		{
+// 			split_arg(input, &data);
+// 			mini_init(&data, data.env);
+// 			if (data.token)
+// 				free_list(data.token);
+// 		}
+// 		free(input);
+// 	}
+// 	free_env_list(data.env);
+// 	return (0);
+// }
+
+
+
+
 // void	set_env_value(t_env **env, const char *key, const char *value)
 // {
 // 	t_env *curr = *env;
