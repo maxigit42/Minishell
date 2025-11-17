@@ -12,11 +12,10 @@
 
 #include "minishell.h"
 
-
 void	execute_single_cmd(t_data *data, t_env *envp)
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid < 0)
@@ -64,13 +63,12 @@ static void	execute_direct_path(char **cmd, char **envp_array)
 
 void	execute_cmd(t_env *env, char **cmd)
 {
-	char *full_envp;
-	char **paths;
-	char **envp_array;
+	char	*full_envp;
+	char	**paths;
+	char	**envp_array;
 
 	if (!cmd || !cmd[0])
 		return ;
-
 	envp_array = env_list_to_array(env);
 	if (!envp_array)
 		return ;
