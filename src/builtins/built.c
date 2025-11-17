@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: biniesta <biniesta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 19:04:58 by mwilline          #+#    #+#             */
-/*   Updated: 2025/11/17 05:21:07 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/11/17 14:42:48 by biniesta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,27 @@ int	execute_builtin(t_data *data, t_env **env)
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (builtin_exit(args));
 	return (1);
+}
+
+int	builtin_modifies_state(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	return (!ft_strcmp(cmd, "cd")
+		|| !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "unset")
+		|| !ft_strcmp(cmd, "exit"));
+}
+
+int	is_builtin(const char *str)
+{
+	if (!str)
+		return (0);
+	return (ft_strcmp(str, "echo") == 0
+		|| ft_strcmp(str, "cd") == 0
+		|| ft_strcmp(str, "pwd") == 0
+		|| ft_strcmp(str, "export") == 0
+		|| ft_strcmp(str, "unset") == 0
+		|| ft_strcmp(str, "env") == 0
+		|| ft_strcmp(str, "exit") == 0);
 }

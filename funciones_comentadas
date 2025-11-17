@@ -109,4 +109,13 @@
 // 	free(name);
 // 	return (j);
 // }
-
+// void	ft_father(t_data *data, t_env *envp)
+// {
+// 	if (data->pipe == 0)
+// 		execute_single_cmd(data, envp);
+// 	else if (data->pipe > 0)
+// 	{
+// 		execute_pipes(data, envp);
+// 		free_args(data);
+// 	}
+// }
