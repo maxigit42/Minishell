@@ -113,6 +113,8 @@ void	free_cmd_array(char ***cmd_array);
 int		ft_strcmp(const char *s, const char *ss);
 void free_token(t_parse_token *token);
 char	*expand_input(char *input);
+int		get_var_name_len(char *str);
+char	*get_var_name(char *str, int len);
 
 // signs
 void	set_signal(void);

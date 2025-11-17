@@ -383,3 +383,29 @@ char	**get_cmds(t_data *data)
 	args[i] = NULL;
 	return (args);
 }
+
+int	get_var_name_len(char *str)
+{
+	int	len = 0;
+
+	if (str[len] == '?')
+		return (1);
+	if (!ft_isalpha(str[len]) && str[len] != '_')
+		return (0);
+	while (str[len] && (ft_isalnum(str[len]) || str[len] == '_'))
+		len++;
+	return (len);
+}
+
+char	*get_var_name(char *str, int len)
+{
+	char	*name;
+
+	if (len <= 0)
+		return (NULL);
+	name = malloc(len + 1);
+	if (!name)
+		return (NULL);
+	ft_strlcpy(name, str, len + 1);
+	return (name);
+}
