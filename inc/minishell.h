@@ -64,7 +64,8 @@ typedef struct t_data
 	char	***cmd;
 	char	**single_cmd;
 } t_data;
-int		execute_cmd(t_env *env, char **cmd);
+
+void	execute_cmd(t_env *env, char **cmd);
 int		find_valid_path(char **paths, char **envp, char **cmd);
 char	*get_envp(char **envp);
 char	**get_cmds(t_data *data);
@@ -115,6 +116,8 @@ void free_token(t_parse_token *token);
 char	*expand_input(char *input);
 int		get_var_name_len(char *str);
 char	*get_var_name(char *str, int len);
+int builtin_modifies_state(char *cmd);
+int has_redirection(t_token *token);
 
 // signs
 void	set_signal(void);

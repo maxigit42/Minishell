@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: biniesta <biniesta@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 15:39:20 by runo              #+#    #+#             */
-/*   Updated: 2025/11/16 20:50:47 by biniesta         ###   ########.fr       */
+/*   Updated: 2025/11/17 05:26:17 by mwilline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//revisar que al hacer un heredoc con un comando invalido redirigido a un 
+//revisar que al hacer un heredoc con un comando invalido redirigido a un
 //outfile el mensaje del error se escribe en el archivo y no en la terminal
 static void	ft_heredoc_loop(char *limit, int fd)
 {

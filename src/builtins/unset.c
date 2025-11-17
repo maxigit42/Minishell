@@ -6,20 +6,21 @@
 /*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 18:57:41 by mwilline          #+#    #+#             */
-/*   Updated: 2025/09/17 19:43:03 by mwilline         ###   ########.fr       */
+/*   Updated: 2025/11/17 05:23:50 by mwilline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_unset(char **args, t_env **env)
+int	builtin_unset(char **args, t_env **env)
 {
-    int i = 1;
+	int	i;
 
-    while (args[i])
-    {
-        unset_env_value(env, args[i]);
-        i++;
-    }
-    return (0);
+	i = 1;
+	while (args[i])
+	{
+		unset_env_value(env, args[i]);
+		i++;
+	}
+	return (0);
 }

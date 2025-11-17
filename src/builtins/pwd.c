@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: runo <runo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mwilline <mwilline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 18:39:29 by mwilline          #+#    #+#             */
-/*   Updated: 2025/11/14 11:05:32 by runo             ###   ########.fr       */
+/*   Updated: 2025/11/17 05:23:45 by mwilline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 int	builtin_pwd(void)
 {
-	char cwd[1024];
+	char	cwd[1024];
 
-	if( getcwd(cwd, sizeof(cwd)) != NULL)
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
 		printf("%s\n", cwd);
-		return(0);
+		return (0);
 	}
 	perror("pwd");
-	return(1);
+	return (1);
 }
