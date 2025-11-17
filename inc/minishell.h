@@ -148,6 +148,10 @@ void	ft_take_cmd(t_data *data);
 void	take_single_cmd(t_data *data);
 void	print_cmds(t_data *data);
 
+void	redir_cmd(t_data *data, t_env *envp);
+int alloc_cmd_array(t_data *data);
+char	**alloc_subcmd(t_token *current);
+void	fill_subcmd(t_token **cur, char **subcmd);
 
 //exe_utils
 int	handle_path_command(char **cmd, char **envp_array);
