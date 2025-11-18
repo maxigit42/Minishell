@@ -100,6 +100,7 @@ int				is_builtin(const char *str);
 t_parse_token	*split_with_quotes(char *str);
 char			*expand_variables(char *str, t_data *data);
 char			**process_tokens(t_parse_token *tokens, t_data *data);
+int				check_quotes(char *str, t_data *data);
 
 /* utils */
 void			ft_error(char *str, int quit);

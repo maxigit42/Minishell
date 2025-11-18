@@ -84,6 +84,8 @@ void	split_arg(char *args, t_data *data)
 	int				i;
 	t_parse_token	*tq;
 
+	if (!check_quotes(args, data))
+		return ;
 	if (!args || !*args)
 		return ;
 	tq = split_with_quotes(args);
