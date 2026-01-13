@@ -5,7 +5,7 @@
 ## 🏆 Project Achievement: Building a UNIX Interpreter
 Minishell is one of the most significant milestones in the 42 curriculum. It is a simplified implementation of a real shell (Bash), requiring a deep understanding of process synchronization, file descriptors, and signal handling in C.
 
-This project represents over [Number of Weeks/Months] of intense work, transitioning from basic programming to complex system-level architecture.
+This project represents over 4 months of intense work, transitioning from basic programming to complex system-level architecture.
 
 ---
 
